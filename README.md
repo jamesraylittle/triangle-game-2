@@ -10,7 +10,7 @@ I have been fascinated by this game for many years, and attempted to [create a s
 This project uses `C++17`, currently there is no meta build system.
 
 In order to compile currently, run:
-`g++ main.cpp board.cpp -o main --std=c++17`
+`g++ *.cpp -o main --std=c++17`
 
 #### Goals
 * Implement a Build system (ninja, cmake)
