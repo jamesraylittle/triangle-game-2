@@ -5,6 +5,7 @@
 #include <ostream>
 #include <string>
 #include <sstream>
+#include <cmath>
 
 #define EMPTY_PEG_STR "X"
 
@@ -17,22 +18,32 @@ namespace TriangleGame {
 			peg(int row, int index);
 			peg(int number);
 
-			int getNumber();
-			int getRow();
-			int getIndex();
+			//copy constructor
+			peg(const peg& p);//= delete;
 
-			bool atBegin();
-			bool atEnd();
-			bool atMiddle();
+			int getNumber() const;
+			int getRow() const;
+			int getIndex() const;
 
-			bool remove();
-			bool replace();
+			bool atBegin() const;
+			bool atEnd() const;
+			bool atMiddle() const;
 
-			bool isRemoved();
+			const bool remove();
+			const bool replace();
 
-			std::string to_string();
+			bool isRemoved() const;
 
-			friend std::ostream& operator<<(std::ostream& os, peg& p);
+			std::string to_string() const;
+
+			bool operator==(const peg& other) const;
+			bool operator<(const peg& other) const;
+			bool operator>(const peg& other) const;
+			bool operator>=(const peg& other) const;
+			bool operator<=(const peg& other) const;
+			
+			friend std::ostream& operator<<(std::ostream& os, const peg& p);
+			
 
 			static int FindLastPegNumber(int row);
 			static int FindPegNumber(int row, int index);
@@ -44,6 +55,7 @@ namespace TriangleGame {
 			int _number;
 			bool _atEnd;
 			bool _atBegin;
+			bool _atMiddle;
 			bool _removed;
 
 

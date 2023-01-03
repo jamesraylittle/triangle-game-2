@@ -1,5 +1,5 @@
 #include "include/board.h"
-
+#include <iostream>
 namespace TriangleGame {
 
 	board::board(int height)
@@ -16,6 +16,10 @@ namespace TriangleGame {
 
 	int board::getTotalRemovedPegs() {
 		return _total_pegs_removed;
+	}
+
+	int board::getHeight() {
+		return _height;
 	}
 
 	bool board::getPeg(int row, int index, peg& p) {
@@ -45,12 +49,11 @@ namespace TriangleGame {
 		return addPeg(row, index);
 	}
 
-	bool board::addPeg(peg p) {
+	bool board::addPeg(const peg& p) {
 		return addPeg(p.getRow(), p.getIndex());
 	}
 
 	bool board::removePeg(int row, int index) {
-		if (!_validate(row, index)) return false;
 		if (!_pegs[row][index].remove()) return false;
 			
 		_total_pegs_removed++;
@@ -63,8 +66,16 @@ namespace TriangleGame {
 		return removePeg(row, index);
 	}
 
-	bool board::removePeg(peg p) {
+	bool board::removePeg(const peg& p) {
 		return removePeg(p.getRow(), p.getIndex());
+	}
+
+	bool board::validateMove(const peg& fromPeg, const peg& toPeg) {	
+		if (fromPeg.isRemoved()) return false;
+		if (!toPeg.isRemoved()) return false;
+		peg middle;
+		_find_middle_peg(fromPeg, toPeg, middle);
+		return !middle.isRemoved();
 	}
 
 	bool board::isPegRemoved(int pegNumber) {
@@ -73,20 +84,14 @@ namespace TriangleGame {
 		return _pegs[row][index].isRemoved();
 	}
 
-	void board::movePeg(peg fromPeg, peg toPeg) {
-
-		int dist = fromPeg.getRow() - toPeg.getRow();
-
-		if (dist == 0) { //same row
-
-		} else if (dist > 0) { //fromPeg is jump up to toPeg
-			removePeg(fromPeg.getRow() - 1, fromPeg.getIndex());
-		} else { //dist < 0: fromPeg is jumping down to toPeg
-
-		}
-
+	void board::movePeg(const peg& fromPeg, const peg& toPeg) {
 		removePeg(fromPeg);
 		addPeg(toPeg);
+
+		//remove jumped peg.
+		peg middle;
+		_find_middle_peg(fromPeg, toPeg, middle);
+		removePeg(middle);
 	}
 
 	void board::movePeg(int fromPeg, int toPeg) {
@@ -95,57 +100,87 @@ namespace TriangleGame {
 		getPeg(toPeg, t);
 		movePeg(f, t);
 	}
-/*
-	std::vector<peg> board::getMoves(int pegNumber) {
-		int row, index;
-		_locate_peg(pegNumber, row, index);
+
+	std::map<int, std::vector<int>> board::getAllMoves() {
+		auto m = std::map<int, std::vector<int>>();
+		int pegNum = 1;
+		int last = peg::FindLastPegNumber(_height);
+
+		for (int i = 1; i <= last; i++) {
+			peg p;
+			if (!getPeg(i, p))
+				continue;
+
+			if (!p.isRemoved())
+				continue;
+
+			auto moves = getMoves(p);
+			if (moves.empty())
+				continue;
+
+			m[p.getNumber()] = moves;
+		}
+
+		return m;
+	}
+
+	std::vector<int> board::getMoves(const peg& toPeg) {
 		auto moves = std::vector<int>();
 
-		bool pegAtStart = index == 0;
-		bool pegAtEnd = index == (_pegs[row].size() - 1);
+		int index = toPeg.getIndex();
+		int row = toPeg.getRow();
 
-		if (_pegs[row].size() > 2) {
-			if (index == 0)
-				_build_move_list(_pegs[row][index + 2], moves);
-			else 
-				_build_move_list(_pegs[row][index + 2], moves);
-		}
+		//check above:
+		int aboveRow = row - 2;
+		if (aboveRow >= 0) {
 
-		if (row - 2 >= 0) {
-			auto above = _pegs[row - 2];
-
-			if (pegAtStart || pegAtEnd) {
-				_build_move_list(above[0], moves);
+			if (toPeg.atBegin()) {
+				_add_move(_pegs[aboveRow][0], toPeg, moves);
+			} else if (toPeg.atEnd()) {
+				_add_move( _pegs[aboveRow][aboveRow], toPeg, moves);
 			} else {
-				_build_move_list(above[above.size() - 1], moves);
+				if (index - 2 >= 0)
+					_add_move(_pegs[aboveRow][index - 2], toPeg, moves);
+				if (index <= aboveRow) 
+					_add_move(_pegs[aboveRow][index], toPeg, moves);
+				if (index + 2 <= aboveRow)
+					_add_move(_pegs[aboveRow][index + 2], toPeg, moves);
 			}
 
 		}
 
-		if (row + 2 < _height) {
-			auto below = _pegs[row + 2];
-			if (pegAtEnd) { 
-				_build_move_list(below[below.size() - index - 1], moves);
-				_build_move_list(below[below.size() - 1], moves);
-			} else if (pegAtStart) {
-				_build_move_list(below[0], moves);
-				_build_move_list(below[index + 2], moves);
-			} else {
-				_build_move_list(below[index], moves);
-				_build_move_list(below[index + 2], moves);
-			}
-				
-			
-			
-		}
+		//check current row:
+		if (index - 2 >= 0)
+			_add_move(_pegs[row][index - 2], toPeg, moves);
 
+		if (index + 2 <= row)
+			_add_move(_pegs[row][index + 2], toPeg, moves);
+
+		//check below:
+		int belowRow = row + 2;
+		if (belowRow < _height) {
+
+			if (toPeg.atBegin()) {
+				_add_move(_pegs[belowRow][0], toPeg, moves);
+				_add_move(_pegs[belowRow][2], toPeg, moves);
+			} else if (toPeg.atEnd()) {
+				_add_move(_pegs[belowRow][belowRow - 2], toPeg, moves);
+				_add_move(_pegs[belowRow][belowRow], toPeg, moves);
+			} else {
+				_add_move(_pegs[belowRow][index], toPeg, moves);
+				if (index + 2 < belowRow)
+					_add_move(_pegs[belowRow][index + 2], toPeg, moves);
+			}
+
+		}
+		
 		return moves;
-	}*/
+	}
 
 	std::string board::to_string() {
+		if (_pegs.empty()) return "";
 		std::stringstream ss;
-
-		
+	
 		for (int row = 0; row < _height; row++) {
 
 			//print spaces
@@ -173,7 +208,7 @@ namespace TriangleGame {
 
 
 	//PRIVATE
-	void board::_init_pegs() {
+	const void board::_init_pegs() {
 		for (int row = 0; row < _height; row++) {
 			auto row_p = std::vector<peg>();
 
@@ -181,7 +216,7 @@ namespace TriangleGame {
 			int s_pos = e_pos - row;
 
 			for (int i = s_pos; i <=  e_pos; i++) 
-				row_p.push_back( peg(i, row, (row+1) - (e_pos - i)) );
+				row_p.push_back(peg(i, row, (row) - (e_pos - i)) );
 
 			_pegs.push_back(row_p);
 
@@ -189,10 +224,11 @@ namespace TriangleGame {
 
 	}
 
-	void board::_build_move_list(peg p, std::vector<peg>& moves) {
-		if (p.isRemoved()) return;
+	const void board::_add_move(const peg& fromPeg, const peg& toPeg, std::vector<int>& moves) {
+		if (!validateMove(fromPeg, toPeg))
+			return;
 
-		moves.push_back(p);
+		moves.push_back(fromPeg.getNumber());
 	}
 
 	bool board::_validate(int row, int index) {
@@ -200,6 +236,29 @@ namespace TriangleGame {
 		if (index < 0 || index >= (row+1)) return false;
 
 		return true;
+	}
+
+	void board::_find_middle_peg(const peg& fromPeg, const peg& toPeg, peg& middlePeg) {
+		if (fromPeg.getRow() == toPeg.getRow()) { //same row
+			int idx = fromPeg > toPeg
+				? fromPeg.getIndex()
+				: toPeg.getIndex();
+
+			middlePeg = _pegs[fromPeg.getRow()][idx - 1];
+			return;
+		}
+
+		if (fromPeg.getIndex() == toPeg.getIndex()) {
+			int row = fromPeg > toPeg
+				? fromPeg.getRow()
+				: toPeg.getRow();
+			middlePeg = _pegs[row - 1][fromPeg.getIndex()];
+			return;
+		}
+
+		middlePeg = fromPeg > toPeg
+			? _pegs[fromPeg.getRow() - 1][fromPeg.getIndex() - 1]
+			: _pegs[toPeg.getRow() - 1][toPeg.getIndex() - 1];
 	}
 
 

@@ -5,9 +5,7 @@ namespace TriangleGame {
 	peg::peg()
 	: _number(-1), _row(-1), _index(-1) 
 	{
-		_removed = true;
-		_atEnd = false;
-		_atBegin = false;
+
 	}
 
 	peg::peg(int number, int row, int index)
@@ -30,54 +28,89 @@ namespace TriangleGame {
 		_init_peg();
 	}
 
-	int peg::getNumber() {
+	peg::peg(const peg& p) {
+		_row = p._row;
+		_index = p._index;
+		_number = p._number;
+		_removed = p._removed;
+		_atBegin = p._atBegin;
+		_atMiddle = p._atMiddle;
+		_atEnd = p._atEnd;
+	}
+
+	int peg::getNumber() const {
 		return _number;
 	}
 
-	int peg::getRow() {
+	int peg::getRow() const {
 		return _row;
 	}
 
-	int peg::getIndex() {
+	int peg::getIndex() const {
 		return _index;
 	}
 
-	bool peg::atBegin() {
+	bool peg::atBegin() const {
 		return _atBegin;
 	}
 
-	bool peg::atEnd() {
+	bool peg::atEnd() const {
 		return _atEnd;
 	}
 
-	bool peg::atMiddle() {
-		return !_atBegin && !_atEnd;
+	bool peg::atMiddle() const {
+		return _atMiddle;
 	}
 
-	bool peg::remove() {
+	const bool peg::remove() {
 		if (_removed) return false;
 		_removed = true;
 		return true;
 	}
 
-	bool peg::replace() {
+	const bool peg::replace() {
 		if (!_removed) return false;
 		_removed = false;
 		return true;
 	}
 
-	bool peg::isRemoved() {
+	bool peg::isRemoved() const {
 		return _removed;
 	}
 
-	std::string peg::to_string() {
+	std::string peg::to_string() const {
 		if (_removed) return EMPTY_PEG_STR;
 		std::stringstream ss;
 		ss << _number;
 		return ss.str();
 	}
 
-	std::ostream& operator<<(std::ostream& os, peg& p) {
+	bool peg::operator==(const peg& other) const {
+		return _row == other.getRow()
+			&& _index == other.getIndex();
+	}
+
+	bool peg::operator<(const peg& other) const {
+		if (_row == other.getRow())
+			return _index < other.getIndex();
+		return _row < other.getRow();
+	}
+
+	bool peg::operator>(const peg& other) const {
+		if (_row == other.getRow())
+			return _index > other.getIndex();
+		return _row > other.getRow();
+	}
+
+	bool peg::operator>=(const peg& other) const {
+		return *(this) > other || *(this) == other;
+	}
+
+	bool peg::operator<=(const peg& other) const {
+		return *(this) < other || *(this) == other;
+	}
+
+	std::ostream& operator<<(std::ostream& os, const peg& p) {
 		os << p.to_string();
 		return os;
 	}
@@ -107,8 +140,10 @@ namespace TriangleGame {
 
 	void peg::_init_peg() {
 		_removed = false;
-		_atEnd = peg::FindLastPegNumber(_row) == _number;
-		_atBegin = peg::FindPegNumber(_row, _index) == _number;
+		_atEnd = _index == _row;
+		_atBegin = _index == 0;
+		int middle_idx = floor((_row + 1) / 2.0);
+		_atMiddle = _index == middle_idx && _row % 2 == 0;
 	}
 
 }
