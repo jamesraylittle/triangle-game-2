@@ -42,6 +42,12 @@ std::string vectorToStr(const std::vector<int>& v) {
 	return ss.str();
 }
 
+std::string moveListToStr(int pegNumber, const std::vector<int>& moves) {
+	std::stringstream ss;
+	ss << vectorToStr(moves) << " => " << pegNumber;
+	return ss.str();
+}
+
 int main() {
 
 	int height = askForNumber("Enter Triangle Height", 2, 10);
@@ -51,15 +57,32 @@ int main() {
 
 	cout << board << endl;
 
-	int firstPeg = askForNumber("Enter First Peg to Remove", 1, board.getTotalPegs());
-	board.removePeg(firstPeg);
-	
-	cout << board << endl;
-	
-	int peg = askForNumber("Select a Peg to Move", 1, board.getTotalPegs());
+	int pegNumber = askForNumber("Enter First Peg to Remove", 1, board.getTotalPegs());
+	board.removePeg(pegNumber);
+		
+	do {
+		//Display Board
+		cout << board << endl;
+		//auto moves = board.getMoves(peg);
+		//cout << "Avaliable Moves: " << moveListToStr(peg, moves) << endl;
 
-	auto moves = board.getMoves(peg);
-	cout << "Avaliable Moves: " << vectorToStr(moves) << endl;
+		int fromPeg = askForNumber("Select a Peg to Move", 1, board.getTotalPegs());
+		
+		if (board.isPegRemoved(fromPeg)) {
+			cout << "\t" << "Peg [" << fromPeg << "] has already been removed." << endl;
+			continue;
+		}
+
+		int toPeg = askForNumber("Move To", 1, board.getTotalPegs());
+		if (!board.isPegRemoved(toPeg)) {
+			cout << "\t" << "Cannot Move Peg [" << fromPeg << "] to ["<< toPeg << "], becuase [" << toPeg << "] is not open." << endl;
+			continue;
+		}
+
+		board.movePeg(fromPeg, toPeg);
+		
+		
+	} while (board.getTotalRemovedPegs() < board.getTotalPegs());
 
 	return EXIT_SUCCESS;
 

@@ -3,13 +3,16 @@
 #define __H_TRIANGLE_BOARD__
 
 #include <vector>
+#include <algorithm>
 #include <ostream>
 #include <sstream>
 #include <string>
 #include <iomanip>
 
+#include "include/peg.h"
+
 #define EMPTY_PEG -1
-#define EMPTY_PEG_STR "X"
+
 
 namespace TriangleGame {
 
@@ -20,8 +23,24 @@ namespace TriangleGame {
 			int getTotalPegs();
 			int getTotalRemovedPegs();
 
-			void removePeg(int pegNumber);
-			std::vector<int> getMoves(int pegNumber);
+			bool getPeg(int row, int index, peg& p);
+			bool getPeg(int pegNumber, peg& p);
+			
+			bool addPeg(int row, int index);
+			bool addPeg(int pegNumber);
+			bool addPeg(peg p);
+
+			bool removePeg(int row, int index);
+			bool removePeg(int pegNumber);
+			bool removePeg(peg p);
+			
+
+			bool isPegRemoved(int pegNumber);
+
+			void movePeg(peg fromPeg, peg toPeg);
+			void movePeg(int fromPeg, int toPeg);
+
+			//std::vector<peg> getMoves(int pegNumber);
 
 			std::string to_string();
 
@@ -29,13 +48,15 @@ namespace TriangleGame {
 
 		private:
 			void _init_pegs();
-			int _get_last_peg_number(int row);
-			void _locate_peg(int pegNumber, int& row, int& index);
+			
+			void _build_move_list(peg p, std::vector<peg>& moves);
+
+			bool _validate(int row, int index);
 
 			int _height;
 			int _total_pegs;
-			int _pegs_removed;
-			std::vector<std::vector<int>> _pegs;
+			std::vector<std::vector<peg>> _pegs;
+			int _total_pegs_removed;
 
 	};
 
