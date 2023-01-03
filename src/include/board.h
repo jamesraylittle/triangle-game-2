@@ -41,8 +41,8 @@ namespace TriangleGame {
 
 			bool isPegRemoved(int pegNumber);
 
-			void movePeg(const peg& fromPeg, const peg& toPeg);
-			void movePeg(int fromPeg, int toPeg);
+			bool movePeg(const peg& fromPeg, const peg& toPeg);
+			bool movePeg(int fromPeg, int toPeg);
 
 			std::map<int, std::vector<int>> getAllMoves();
 			std::vector<int> getMoves(const peg& toPeg);

@@ -73,6 +73,16 @@ namespace TriangleGame {
 	bool board::validateMove(const peg& fromPeg, const peg& toPeg) {	
 		if (fromPeg.isRemoved()) return false;
 		if (!toPeg.isRemoved()) return false;
+
+		//validate jump
+		auto dist = -1;
+		if (fromPeg.getRow() == toPeg.getRow()) {
+			dist = abs(fromPeg.getIndex() - toPeg.getIndex());
+		} else {
+			dist = abs(fromPeg.getRow() - toPeg.getRow());
+		}
+		if (dist != 2) return false;
+
 		peg middle;
 		_find_middle_peg(fromPeg, toPeg, middle);
 		return !middle.isRemoved();
@@ -84,7 +94,9 @@ namespace TriangleGame {
 		return _pegs[row][index].isRemoved();
 	}
 
-	void board::movePeg(const peg& fromPeg, const peg& toPeg) {
+	bool board::movePeg(const peg& fromPeg, const peg& toPeg) {
+		if (!validateMove(fromPeg, toPeg)) return false;
+
 		removePeg(fromPeg);
 		addPeg(toPeg);
 
@@ -92,13 +104,15 @@ namespace TriangleGame {
 		peg middle;
 		_find_middle_peg(fromPeg, toPeg, middle);
 		removePeg(middle);
+
+		return true;
 	}
 
-	void board::movePeg(int fromPeg, int toPeg) {
+	bool board::movePeg(int fromPeg, int toPeg) {
 		peg f, t;
 		getPeg(fromPeg, f);
 		getPeg(toPeg, t);
-		movePeg(f, t);
+		return movePeg(f, t);
 	}
 
 	std::map<int, std::vector<int>> board::getAllMoves() {
