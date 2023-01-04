@@ -1,13 +1,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <ios>
-#include <limits>
-#include <sstream>
-#include <algorithm>
 
 #include "include/util.h"
-
 #include "include/board.h"
 
 using namespace std;
