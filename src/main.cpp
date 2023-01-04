@@ -14,6 +14,23 @@ using namespace std;
 
 #define DEFAULT_TRI_HEIGHT 5
 
+std::string moveListToStr(int pegNumber, std::vector<int>& moves);
+std::string moveListToStr(std::map<int, std::vector<int>>& m);
+std::vector<int> mergeLists(std::map<int, std::vector<int>>& m);
+std::vector<int> getOpenPegsFrom(int fromPeg, std::map<int, std::vector<int>>& m);
+void playGame(int height);
+
+int main() {
+
+	do {
+		
+		playGame(DEFAULT_TRI_HEIGHT);
+
+	} while (util::askYesNo("Do You want to Play Again?"));
+
+	return EXIT_SUCCESS;
+}
+
 std::string moveListToStr(int pegNumber, std::vector<int>& moves) {
 	std::stringstream ss;
 	ss << util::vectorToStr(moves) << " => " << pegNumber;
@@ -59,18 +76,6 @@ std::vector<int> getOpenPegsFrom(int fromPeg, std::map<int, std::vector<int>>& m
 	return v;
 }
 
-bool hasPosition(int peg, const std::map<int, std::vector<int>>& m) {
-	for (const auto [key, value] : m) {
-
-		for (const auto& pos : value) {
-			if (pos == peg)
-				return true;
-		}
-
-	}
-	return false;
-}
-
 void playGame(int height) {
 	auto board = TriangleGame::board(height);
 
@@ -110,20 +115,5 @@ void playGame(int height) {
 	}
 
 	cout << endl << results << endl << endl;
-
-}
-
-int main() {
-	
-	bool playAgain = false;
-
-	do {
-		
-		playGame(DEFAULT_TRI_HEIGHT);
-
-		playAgain = util::askYesNo("Do You want to Play Again?");
-	} while (playAgain);
-
-	return EXIT_SUCCESS;
 
 }
