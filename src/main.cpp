@@ -14,10 +14,10 @@ using namespace std;
 
 #define DEFAULT_TRI_HEIGHT 5
 
-std::string moveListToStr(int pegNumber, std::vector<int>& moves);
-std::string moveListToStr(std::map<int, std::vector<int>>& m);
-std::vector<int> mergeLists(std::map<int, std::vector<int>>& m);
-std::vector<int> getOpenPegsFrom(int fromPeg, std::map<int, std::vector<int>>& m);
+std::string moveListToStr(int pegNumber, const TriangleGame::t_moves& moves);
+std::string moveListToStr(const TriangleGame::t_open_moves& m);
+TriangleGame::t_moves mergeLists(TriangleGame::t_open_moves& m);
+TriangleGame::t_moves getOpenPegsFrom(int fromPeg, const TriangleGame::t_open_moves& m);
 void playGame(int height);
 
 int main() {
@@ -31,13 +31,13 @@ int main() {
 	return EXIT_SUCCESS;
 }
 
-std::string moveListToStr(int pegNumber, std::vector<int>& moves) {
+std::string moveListToStr(int pegNumber, const TriangleGame::t_moves& moves) {
 	std::stringstream ss;
 	ss << util::vectorToStr(moves) << " => " << pegNumber;
 	return ss.str();
 }
 
-std::string moveListToStr(std::map<int, std::vector<int>>& m) {
+std::string moveListToStr(const TriangleGame::t_open_moves& m) {
 	std::stringstream ss;
 	int i = 0;
 	for (auto it = m.begin(); it != m.end(); ++it){
@@ -49,8 +49,8 @@ std::string moveListToStr(std::map<int, std::vector<int>>& m) {
 	return ss.str();
 }
 
-std::vector<int> mergeLists(std::map<int, std::vector<int>>& m) {
-	auto v = std::vector<int>();
+TriangleGame::t_moves mergeLists(TriangleGame::t_open_moves& m) {
+	auto v = TriangleGame::t_moves();
 	for (auto it = m.begin(); it != m.end(); ++it) {
 
 		auto list = it->second;
@@ -65,7 +65,7 @@ std::vector<int> mergeLists(std::map<int, std::vector<int>>& m) {
 	return v;
 }
 
-std::vector<int> getOpenPegsFrom(int fromPeg, std::map<int, std::vector<int>>& m) {
+TriangleGame::t_moves getOpenPegsFrom(int fromPeg, const TriangleGame::t_open_moves& m) {
 	auto v = std::vector<int>();
 	for (auto it = m.begin(); it != m.end(); ++it) {
 		auto list = it->second;

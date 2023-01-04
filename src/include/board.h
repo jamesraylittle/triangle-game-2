@@ -17,6 +17,10 @@
 
 namespace TriangleGame {
 
+	typedef std::vector<int> t_moves;
+	typedef std::map<int, t_moves> t_open_moves;
+	typedef std::vector<std::vector<peg>> t_board;
+
 	class board {
 		public:
 			board(int height);
@@ -44,8 +48,8 @@ namespace TriangleGame {
 			bool movePeg(const peg& fromPeg, const peg& toPeg);
 			bool movePeg(int fromPeg, int toPeg);
 
-			std::map<int, std::vector<int>> getAllMoves();
-			std::vector<int> getMoves(const peg& toPeg);
+			t_open_moves getAllMoves();
+			t_moves getMoves(const peg& toPeg);
 
 			std::string to_string();
 
@@ -54,7 +58,7 @@ namespace TriangleGame {
 		private:
 			const void _init_pegs();
 			
-			const void _add_move(const peg& fromPeg, const peg& toPeg, std::vector<int>& moves);
+			const void _add_move(const peg& fromPeg, const peg& toPeg, t_moves& moves);
 
 			bool _validate(int row, int index);
 
@@ -62,7 +66,7 @@ namespace TriangleGame {
 
 			int _height;
 			int _total_pegs;
-			std::vector<std::vector<peg>> _pegs;
+			t_board _pegs;
 			int _total_pegs_removed;
 
 	};

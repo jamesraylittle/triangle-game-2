@@ -115,8 +115,8 @@ namespace TriangleGame {
 		return movePeg(f, t);
 	}
 
-	std::map<int, std::vector<int>> board::getAllMoves() {
-		auto m = std::map<int, std::vector<int>>();
+	t_open_moves board::getAllMoves() {
+		auto m = t_open_moves();
 		int pegNum = 1;
 		int last = peg::FindLastPegNumber(_height);
 
@@ -138,8 +138,8 @@ namespace TriangleGame {
 		return m;
 	}
 
-	std::vector<int> board::getMoves(const peg& toPeg) {
-		auto moves = std::vector<int>();
+	t_moves board::getMoves(const peg& toPeg) {
+		auto moves = t_moves();
 
 		int index = toPeg.getIndex();
 		int row = toPeg.getRow();
@@ -238,7 +238,7 @@ namespace TriangleGame {
 
 	}
 
-	const void board::_add_move(const peg& fromPeg, const peg& toPeg, std::vector<int>& moves) {
+	const void board::_add_move(const peg& fromPeg, const peg& toPeg, t_moves& moves) {
 		if (!validateMove(fromPeg, toPeg))
 			return;
 
