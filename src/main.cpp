@@ -9,6 +9,8 @@
 
 using namespace std;
 
+#define DEFAULT_TRI_HEIGHT 5
+
 int askForNumber(const string& question, int min = INT_MIN, int max = INT_MAX) {
 	int input;
 	while (true) {
@@ -28,6 +30,25 @@ int askForNumber(const string& question, int min = INT_MIN, int max = INT_MAX) {
 	cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
 	return input;
+}
+
+bool askYesNo(const string& question) {
+	char input;
+	while (true) {
+		cout << question << "[Y/N]: ";
+		if (cin >> input) {
+			if (input == 'Y' || input == 'y' || input == 'N' || input == 'n')
+				break;
+		}
+
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+	}
+
+	cin.clear();
+	cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+	return input == 'Y' || input == 'y';
 }
 
 std::string vectorToStr(std::vector<int> v) {
@@ -74,62 +95,65 @@ bool hasPosition(int peg, const std::map<int, std::vector<int>>& m) {
 
 int main() {
 
-	int height = askForNumber("Enter Triangle Height", 2, 10);
-	
-	auto board = TriangleGame::board(height);
-
-
-	cout << board << endl;
-
-
-	int pegNumber = askForNumber("Enter First Peg to Remove", 1, board.getTotalPegs());
-	board.removePeg(pegNumber);
-		
-	auto moves = board.getAllMoves();
-	while (!moves.empty()) {
-		//Display Board
+	bool playAgain = false;
+	do {
+		//int height = askForNumber("Enter Triangle Height", 2, 10);
+		int height = DEFAULT_TRI_HEIGHT;
+		auto board = TriangleGame::board(height);
 		cout << board << endl;
-		cout << "Avaliable Moves: " << moveListToStr(moves) << endl;
-		
-		int fromPeg = askForNumber("Select a Peg to Move", 1, board.getTotalPegs());
-		
-		if (!hasPosition(fromPeg, moves)) {
-			cout << "\t" << "Unable to Move Peg [" << fromPeg << "], no avaliable positions open." << endl;
-			continue;
+
+
+		int pegNumber = askForNumber("Enter First Peg to Remove", 1, board.getTotalPegs());
+		board.removePeg(pegNumber);
+			
+		auto moves = board.getAllMoves();
+		while (!moves.empty()) {
+			//Display Board
+			cout << board << endl;
+			cout << "Avaliable Moves: " << moveListToStr(moves) << endl;
+			
+			int fromPeg = askForNumber("Select a Peg to Move", 1, board.getTotalPegs());
+			
+			if (!hasPosition(fromPeg, moves)) {
+				cout << "\t" << "Unable to Move Peg [" << fromPeg << "], no avaliable positions open." << endl;
+				continue;
+			}
+
+			if (board.isPegRemoved(fromPeg)) {
+				cout << "\t" << "Peg [" << fromPeg << "] has already been removed." << endl;
+				continue;
+			}
+
+			int toPeg = askForNumber("Move To", 1, board.getTotalPegs());
+			if (!board.isPegRemoved(toPeg)) {
+				cout << "\t" << "Cannot Move Peg [" << fromPeg << "] to ["<< toPeg << "], becuase [" << toPeg << "] is not open." << endl;
+				continue;
+			}
+
+			board.movePeg(fromPeg, toPeg);
+			moves = board.getAllMoves();
+			
+			
 		}
 
-		if (board.isPegRemoved(fromPeg)) {
-			cout << "\t" << "Peg [" << fromPeg << "] has already been removed." << endl;
-			continue;
+		cout << board << endl;
+
+		int left = board.getTotalPegs() - board.getTotalRemovedPegs();
+
+		cout << "Total Pegs Left: " << left << endl;
+
+		std::string results = "";
+		switch (left) {
+			case 1: results = "You are a GENIUS"; break;
+			case 2: results = "You are Pretty Smart!"; break;
+			case 3: results = "You are Just Plain Dumb!"; break;
+			default: results = "You are an EQ-NO-RA-MOOOSE!";
 		}
 
-		int toPeg = askForNumber("Move To", 1, board.getTotalPegs());
-		if (!board.isPegRemoved(toPeg)) {
-			cout << "\t" << "Cannot Move Peg [" << fromPeg << "] to ["<< toPeg << "], becuase [" << toPeg << "] is not open." << endl;
-			continue;
-		}
+		cout << endl << results << endl << endl;
 
-		board.movePeg(fromPeg, toPeg);
-		moves = board.getAllMoves();
-		
-		
-	}
-
-	cout << board << endl;
-
-	int left = board.getTotalPegs() - board.getTotalRemovedPegs();
-
-	cout << "Total Pegs Left: " << left << endl;
-
-	std::string results = "";
-	switch (left) {
-		case 1: results = "You are a GENIUS"; break;
-		case 2: results = "You are Pretty Smart!"; break;
-		case 3: results = "You are Just Plain Dumb!"; break;
-		default: results = "You are an EQ-NO-RA-MOOOSE!";
-	}
-
-	cout << endl << results << endl << endl;
+		playAgain = askYesNo("Do You want to Play Again?");
+	} while (playAgain);
 
 	return EXIT_SUCCESS;
 
