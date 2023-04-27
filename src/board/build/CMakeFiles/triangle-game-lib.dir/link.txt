@@ -1,0 +1,2 @@
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc libtriangle-game-lib.a "CMakeFiles/triangle-game-lib.dir/board.cpp.o" "CMakeFiles/triangle-game-lib.dir/peg.cpp.o"
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib libtriangle-game-lib.a

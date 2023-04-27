@@ -10,7 +10,7 @@
 #include <iomanip>
 #include <map>
 
-#include "include/peg.h"
+#include "peg.h"
 
 #define EMPTY_PEG -1
 
@@ -19,7 +19,7 @@ namespace TriangleGame {
 
 	typedef std::vector<int> t_moves;
 	typedef std::map<int, t_moves> t_open_moves;
-	typedef std::vector<std::vector<peg>> t_board;
+	typedef std::vector<std::vector<peg> > t_board;
 
 	class board {
 		public:

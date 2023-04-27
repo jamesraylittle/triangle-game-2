@@ -3,6 +3,7 @@
 #define __H_TRI_GAME_UTIL__
 
 #include <iostream>
+#include <sstream>
 #include <functional>
 #include <string>
 #include <vector>

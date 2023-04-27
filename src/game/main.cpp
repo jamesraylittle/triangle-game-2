@@ -2,8 +2,9 @@
 #include <string>
 #include <vector>
 
-#include "include/util.h"
-#include "include/board.h"
+#include "../include/util.h"
+#include "../board/board.h"
+#include <triangle-game-config.h>
 
 using namespace std;
 
@@ -22,6 +23,7 @@ int main() {
 		playGame(DEFAULT_TRI_HEIGHT);
 
 	} while (util::askYesNo("Do You want to Play Again?"));
+
 
 	return EXIT_SUCCESS;
 }

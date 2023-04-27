@@ -1,4 +1,4 @@
-#include "include/peg.h"
+#include "peg.h"
 
 namespace TriangleGame {
 
