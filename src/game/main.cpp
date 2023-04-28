@@ -2,13 +2,12 @@
 #include <string>
 #include <vector>
 
-#include "../include/util.h"
-#include "../board/board.h"
+#include <util.h>
+#include <board.h>
 #include <triangle-game-config.h>
 
 using namespace std;
 
-#define DEFAULT_TRI_HEIGHT 5
 
 std::string moveListToStr(int pegNumber, const TriangleGame::t_moves& moves);
 std::string moveListToStr(const TriangleGame::t_open_moves& m);
@@ -20,7 +19,7 @@ int main() {
 
 	do {
 		
-		playGame(DEFAULT_TRI_HEIGHT);
+		playGame(TRIANGLE_GAME_DEFAULT_HEIGHT);
 
 	} while (util::askYesNo("Do You want to Play Again?"));
 
@@ -78,10 +77,10 @@ void playGame(int height) {
 
 	cout << board << endl;
 
-	int pegNumber = util::askForNumber("Enter First Peg to Remove", 1, board.getTotalPegs());
-	board.removePeg(pegNumber);
+	int pegNumber = util::askForNumber("Enter First Peg to Remove", 1, board.get_total_pegs());
+	board.remove_peg(pegNumber);
 		
-	auto moves = board.getAllMoves();
+	auto moves = board.get_all_moves();
 
 	while (!moves.empty()) {
 		cout << board << endl << endl;
@@ -91,15 +90,15 @@ void playGame(int height) {
 		int fromPeg = util::askForNumber("Select a Peg to Move", mergeLists(moves));
 		int toPeg = util::askForNumber("Move To", getOpenPegsFrom(fromPeg, moves));
 		
-		board.movePeg(fromPeg, toPeg);
+		board.move_peg(fromPeg, toPeg);
 
-		moves = board.getAllMoves();
+		moves = board.get_all_moves();
 	}
 
 
 	cout << board << endl;
 
-	int left = board.getTotalPegs() - board.getTotalRemovedPegs();
+	int left = board.get_total_pegs() - board.get_total_removed_pegs();
 
 	cout << "Total Pegs Left: " << left << endl;
 

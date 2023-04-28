@@ -1,7 +1,7 @@
 #include "peg.h"
 
 namespace TriangleGame {
-
+	
 	peg::peg()
 	: _number(-1), _row(-1), _index(-1) 
 	{
@@ -38,27 +38,27 @@ namespace TriangleGame {
 		_atEnd = p._atEnd;
 	}
 
-	int peg::getNumber() const {
+	int peg::get_number() const {
 		return _number;
 	}
 
-	int peg::getRow() const {
+	int peg::get_row() const {
 		return _row;
 	}
 
-	int peg::getIndex() const {
+	int peg::get_index() const {
 		return _index;
 	}
 
-	bool peg::atBegin() const {
+	bool peg::at_begin() const {
 		return _atBegin;
 	}
 
-	bool peg::atEnd() const {
+	bool peg::at_end() const {
 		return _atEnd;
 	}
 
-	bool peg::atMiddle() const {
+	bool peg::at_middle() const {
 		return _atMiddle;
 	}
 
@@ -74,7 +74,7 @@ namespace TriangleGame {
 		return true;
 	}
 
-	bool peg::isRemoved() const {
+	bool peg::is_removed() const {
 		return _removed;
 	}
 
@@ -86,20 +86,20 @@ namespace TriangleGame {
 	}
 
 	bool peg::operator==(const peg& other) const {
-		return _row == other.getRow()
-			&& _index == other.getIndex();
+		return _row == other.get_row()
+			&& _index == other.get_index();
 	}
 
 	bool peg::operator<(const peg& other) const {
-		if (_row == other.getRow())
-			return _index < other.getIndex();
-		return _row < other.getRow();
+		if (_row == other.get_row())
+			return _index < other.get_index();
+		return _row < other.get_row();
 	}
 
 	bool peg::operator>(const peg& other) const {
-		if (_row == other.getRow())
-			return _index > other.getIndex();
-		return _row > other.getRow();
+		if (_row == other.get_row())
+			return _index > other.get_index();
+		return _row > other.get_row();
 	}
 
 	bool peg::operator>=(const peg& other) const {
@@ -115,7 +115,10 @@ namespace TriangleGame {
 		return os;
 	}
 
-	//Public Static Methods
+	//--------------------------------------------------
+	// Public Static Methods
+	//--------------------------------------------------
+
 	int peg::FindLastPegNumber(int row) {
 		return (row * (row + 1)) / 2;
 	}
@@ -136,7 +139,9 @@ namespace TriangleGame {
 		index = pegNumber - (last - row + 1) + 1;
 	}
 
-	//Private Methods
+	//--------------------------------------------------
+	// Private Methods
+	//--------------------------------------------------
 
 	void peg::_init_peg() {
 		_removed = false;
