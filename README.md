@@ -17,8 +17,9 @@ cmake -S ../src -B .
 ```
 
 However, a script has been provided to automate this process. The build script accepts two optional arguments:
-	1. The build directory
-	2. The source directory
+1. The build directory
+2. The source directory
+
 The script also can provide flags to `CMake` and `Make` by seeting the environment variables `ANY_CFLAGS` and `ANY_MAKEFLAGS` respectively.
 
 To build the project, with the script, run the following command:
@@ -29,7 +30,7 @@ To build the project, with the script, run the following command:
 
 After building the project, the executable will be located in the `build` directory, under the game directory, named `triganle-game`.
 
-#### Goals
+## Goals
 * ✅ Implement a Build system (ninja, cmake)
 * ✅ Implement Basic Game Mechanics
 * ☑️ Implement a program arguments
