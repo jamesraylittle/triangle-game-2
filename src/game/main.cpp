@@ -6,6 +6,8 @@
 #include <board.h>
 #include <triangle-game-config.h>
 
+#include <tclap/CmdLine.h>
+
 using namespace std;
 
 
@@ -15,7 +17,16 @@ TriangleGame::t_moves mergeLists(TriangleGame::t_open_moves& m);
 TriangleGame::t_moves getOpenPegsFrom(int fromPeg, const TriangleGame::t_open_moves& m);
 void playGame(int height);
 
-int main() {
+int main(int argc, char** argv) {
+
+	try {
+		TCLAP::CmdLine cmd(TRIANGLE_GAME_NAME, ' ', TRIANGLE_GAME_VERSION);
+
+		cmd.parse(argc, argv);
+
+	} catch (TCLAP::ArgException &e) {
+		std::cerr << "error: " << e.error() << " for arg " << e.argId() << std::endl;
+	}
 
 	do {
 		

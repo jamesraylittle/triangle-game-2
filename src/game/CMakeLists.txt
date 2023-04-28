@@ -16,19 +16,19 @@ MESSAGE("VERSION: " ${VERSION})
 
 PROJECT(${PROJ_NAME} VERSION ${VERSION})
 
-
-
 configure_file(triangle-game-config.h.in triangle-game-config.h)
+
 
 add_executable(${PROJECT_NAME} main.cpp)
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_BINARY_DIR})
 target_include_directories(triangle-game-board PUBLIC ${PROJECT_SOURCE_DIR}/../board)
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/../include)
+target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/../external/tclap/include)
 
 
 target_link_directories(triangle-game-board PRIVATE ${PROJECT_BINARY_DIR}/../board)
-
+#target_link_directories(tclap PRIVATE ${PROJECT_BINARY_DIR}/../external/tclap/include)
 
 
 target_link_libraries(${PROJECT_NAME} PRIVATE triangle-game-board)

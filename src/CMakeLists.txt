@@ -19,5 +19,6 @@ MESSAGE("BUILD TYPE: " ${CMAKE_BUILD_TYPE})
 
 add_subdirectory(board)
 add_subdirectory(game)
+add_subdirectory(external)
 
 include_directories(include)
