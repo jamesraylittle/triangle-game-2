@@ -33,5 +33,5 @@ After building the project, the executable will be located in the `build` direct
 ## Goals
 * ✅ Implement a Build system (ninja, cmake)
 * ✅ Implement Basic Game Mechanics
-* ☑️ Implement a program arguments
+* ✅ Implement a program arguments
 * ☑️ Implement some sort of inter-process communication for a game solver
