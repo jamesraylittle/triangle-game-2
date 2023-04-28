@@ -15,7 +15,10 @@
 /**
  * @brief Game Settings
  */
+#define TRIANGLE_GAME_MIN_ALLOW_HEIGHT 4 //!< Minimum Allowed Height of the Game Board
+#define TRIANGLE_GAME_MAX_ALLOW_HEIGHT INT_MAX //!< Maximum Allowed Height of the Game Board
 #define TRIANGLE_GAME_DEFAULT_HEIGHT 5 //!< Default Height of the Game Board
+
 
 #endif
 
