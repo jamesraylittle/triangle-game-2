@@ -21,7 +21,7 @@ int main() {
 		
 		playGame(TRIANGLE_GAME_DEFAULT_HEIGHT);
 
-	} while (util::askYesNo("Do You want to Play Again?"));
+	} while (util::ask_yes_no("Do You want to Play Again?"));
 
 
 	return EXIT_SUCCESS;
@@ -29,7 +29,7 @@ int main() {
 
 std::string moveListToStr(int pegNumber, const TriangleGame::t_moves& moves) {
 	std::stringstream ss;
-	ss << util::vectorToStr(moves) << " => " << pegNumber;
+	ss << util::vector_to_str(moves) << " => " << pegNumber;
 	return ss.str();
 }
 
@@ -77,7 +77,7 @@ void playGame(int height) {
 
 	cout << board << endl;
 
-	int pegNumber = util::askForNumber("Enter First Peg to Remove", 1, board.get_total_pegs());
+	int pegNumber = util::ask_for_number("Enter First Peg to Remove", 1, board.get_total_pegs());
 	board.remove_peg(pegNumber);
 		
 	auto moves = board.get_all_moves();
@@ -87,8 +87,8 @@ void playGame(int height) {
 
 		cout << "Avaliable Moves: " << moveListToStr(moves) << endl;
 		
-		int fromPeg = util::askForNumber("Select a Peg to Move", mergeLists(moves));
-		int toPeg = util::askForNumber("Move To", getOpenPegsFrom(fromPeg, moves));
+		int fromPeg = util::ask_for_number("Select a Peg to Move", mergeLists(moves));
+		int toPeg = util::ask_for_number("Move To", getOpenPegsFrom(fromPeg, moves));
 		
 		board.move_peg(fromPeg, toPeg);
 
