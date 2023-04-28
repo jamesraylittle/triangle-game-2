@@ -28,7 +28,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/../inclu
 
 
 target_link_directories(triangle-game-board PRIVATE ${PROJECT_BINARY_DIR}/../board)
-target_link_directories(${PROJECT_NAME} PRIVATE ${PROJECT_BINARY_DIR}/../include)
+
 
 
 target_link_libraries(${PROJECT_NAME} PRIVATE triangle-game-board)
