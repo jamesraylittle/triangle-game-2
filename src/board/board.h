@@ -20,7 +20,10 @@
 #include <iomanip>
 #include <map>
 
+#include "../include/abstract/printable.h"
+
 #include "peg.h"
+#include "move_history.h"
 
 #define EMPTY_PEG -1 //!< The number representation of an empty peg
 
@@ -44,7 +47,7 @@ namespace TriangleGame {
 	 * The game is over when there are no remaning moves left.
 	 * 
 	 */
-	class board {
+	class board : public abstract::printable {
 		public:
 			/**
 			 * @brief Construct a new board object with the given height.
@@ -204,6 +207,8 @@ namespace TriangleGame {
 			 */
 			bool is_peg_removed(int pegNumber);
 
+			bool remove_inital_peg(int pegNumber);
+
 			/**
 			 * @brief Moves the given fromPeg to the toPeg.
 			 * The move is first validated, if the move is valid then
@@ -256,28 +261,22 @@ namespace TriangleGame {
 			 */
 			t_moves get_moves(const peg& toPegNumber);
 
+			move_history get_move_history() const;
+
 			/**
 			 * @brief Creates a string representation of the board.
 			 * 
 			 * @return std::string The string representation of the board.
 			 */
-			std::string to_string();
-
-			/**
-			 * @brief Creates a string representation of the board, then appends
-			 * the string to the given ostream.
-			 * 
-			 * @param os The ostream to append the string representation of the board to.
-			 * @param b The board to create the string representation of.
-			 * @return std::ostream& The ostream with the string representation of the board appended to it.
-			 */
-			friend std::ostream& operator<<(std::ostream& os, board& b);
+			std::string to_string() const noexcept;
 
 		private:
 			int _height; //!< The height of the board.
 			int _total_pegs; //!< The total number of pegs on the board.
 			t_board _pegs; //!< The board of pegs.
 			int _total_pegs_removed; //!< The total number of pegs removed from the board.
+
+			move_history _history; //!< The history of moves made on the board.
 
 			/**
 			 * @brief Initializes the board with the given height.

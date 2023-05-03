@@ -10,6 +10,14 @@
 #include <util.h>
 #include <board.h>
 
+const std::string GAME_ACTIONS_QUESTION = "Select (J)ump, (U)ndo Previous Move, (V)iew History, (Q)uit";
+const std::vector<char> GAME_ACTIONS = {
+	'J',	// Jump Peg
+	'U',	// Undo Previous Move
+	'V',	// View History
+	'Q' 	// Quit Game
+};
+
 std::string move_list_to_str(int pegNumber, const TriangleGame::t_moves & moves) {
 	std::stringstream ss;
 	ss << util::vector_to_str(moves) << " => " << pegNumber;
@@ -56,44 +64,80 @@ TriangleGame::t_moves get_open_pegs_from(int fromPeg, const TriangleGame::t_open
 	return v;
 }
 
+std::string get_game_result(int total_pegs_left) {
+	switch (total_pegs_left) {
+		case 1:  return "You are a GENIUS"; 
+		case 2:  return "You are Pretty Smart!"; 
+		case 3:  return "You are Just Plain Dumb!"; 
+		default: return "You are an EQ-NO-RA-MOOOSE!";
+	}
+}
+
 void play_game(int height) {
+	//Init Game Board	 
 	auto board = TriangleGame::board(height);
 
+	//Show Game Board
 	std::cout << board << std::endl << std::endl;
 
+	//Ask for First Peg to Remove
 	int pegNumber = util::ask_for_number("Enter First Peg to Remove", 1, board.get_total_pegs());
-	board.remove_peg(pegNumber);
+	board.remove_inital_peg(pegNumber);
 		
+	//Priming Reed Pattern
+	//Get All Moves
 	auto moves = board.get_all_moves();
 
+	//************************
+	//* Game Loop            *
+	//************************
 	while (!moves.empty()) {
+		//Show Game Board
 		std::cout << board << std::endl << std::endl;
 
-		std::cout << "Avaliable Moves: " << move_list_to_str(moves) << std::endl;
-		
-		int fromPeg = util::ask_for_number("Select a Peg to Move", merge_lists(moves));
-		int toPeg = util::ask_for_number("Move To", get_open_pegs_from(fromPeg, moves));
-		
-		board.move_peg(fromPeg, toPeg);
+		//Show Avaliable Moves
+		std::cout << "Avaliable Moves: " << move_list_to_str(moves) << std::endl << std::endl;
 
+		//Ask for Action
+		char action = util::ask_for_option<char>(GAME_ACTIONS_QUESTION, GAME_ACTIONS, util::format_funcs::char_to_upper);
+
+		//Perform Action
+		if (action == 'J') { //Jump Peg
+				int fromPeg = util::ask_for_number("Select a Peg to Move", merge_lists(moves));
+				int toPeg = util::ask_for_number("Move To", get_open_pegs_from(fromPeg, moves));
+				board.move_peg(fromPeg, toPeg);
+
+		} else if (action == 'U') { // Undo Previous Move
+			std::cout << "Undo Previous Move - Feature Not Implemented" << std::endl;
+
+		} else if (action == 'V') { // View History
+			std::cout << "-------- Move History --------" << std::endl << board.get_move_history() << std::endl;
+
+		} else { // Quit Game
+			std::cout << "Quitting Game" << std::endl;
+			return;
+		}
+
+		//Get All Moves
 		moves = board.get_all_moves();
 	}
 
-
+	//************************
+	//* Post Game Results    *
+	//************************
+	 
+	//Show Final Board
 	std::cout << board << std::endl;
 
-	int left = board.get_total_pegs() - board.get_total_removed_pegs();
+	//Show Move History
+	std::cout << "-------- Move History --------" << std::endl << board.get_move_history() << std::endl;
 
+	//Calcualte Total Pegs Left, and Show Results
+	int left = board.get_total_pegs() - board.get_total_removed_pegs();
 	std::cout << "Total Pegs Left: " << left << std::endl;
 
-	std::string results = "";
-	switch (left) {
-		case 1: results = "You are a GENIUS"; break;
-		case 2: results = "You are Pretty Smart!"; break;
-		case 3: results = "You are Just Plain Dumb!"; break;
-		default: results = "You are an EQ-NO-RA-MOOOSE!";
-	}
-
+	//Show Game Results
+	std::string results = get_game_result(left);
 	std::cout << std::endl << results << std::endl << std::endl;
 }
 

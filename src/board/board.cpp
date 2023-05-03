@@ -3,7 +3,7 @@
 namespace TriangleGame {
 
 	board::board(int height)
-		: _height(height) 
+		: _height(height), _history(move_history())
 		{
 			_total_pegs = peg::FindLastPegNumber(height);
 			_total_pegs_removed = 0;
@@ -55,7 +55,6 @@ namespace TriangleGame {
 
 	bool board::remove_peg(int row, int index) {
 		if (!_pegs[row][index].remove()) return false;
-			
 		_total_pegs_removed++;
 		return true;
 	}
@@ -94,6 +93,14 @@ namespace TriangleGame {
 		return _pegs[row][index].is_removed();
 	}
 
+	bool board::remove_inital_peg(int pegNumber) {
+		if (!remove_peg(pegNumber))
+			return false;
+
+		_history.add_move(pegNumber);
+		return true;
+	}
+
 	bool board::move_peg(const peg& fromPeg, const peg& toPeg) {
 		if (!validate_move(fromPeg, toPeg)) return false;
 
@@ -104,6 +111,8 @@ namespace TriangleGame {
 		peg middle;
 		_find_middle_peg(fromPeg, toPeg, middle);
 		remove_peg(middle);
+
+		_history.add_move(fromPeg, toPeg, middle);
 
 		return true;
 	}
@@ -191,7 +200,11 @@ namespace TriangleGame {
 		return moves;
 	}
 
-	std::string board::to_string() {
+	move_history board::get_move_history() const {
+		return _history;
+	}
+
+	std::string board::to_string() const noexcept {
 		if (_pegs.empty()) return "";
 		std::stringstream ss;
 	
@@ -213,11 +226,6 @@ namespace TriangleGame {
 
 		}
 		return ss.str();
-	}
-
-	std::ostream& operator<<(std::ostream& os, board& b) {
-		os << b.to_string();
-		return os;
 	}
 
 	//--------------------------------------------------

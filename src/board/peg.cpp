@@ -38,6 +38,10 @@ namespace TriangleGame {
 		_atEnd = p._atEnd;
 	}
 
+	bool peg::is_empty() const {
+		return _number == -1;
+	}
+
 	int peg::get_number() const {
 		return _number;
 	}
@@ -78,7 +82,7 @@ namespace TriangleGame {
 		return _removed;
 	}
 
-	std::string peg::to_string() const {
+	std::string peg::to_string() const noexcept {
 		if (_removed) return EMPTY_PEG_STR;
 		std::stringstream ss;
 		ss << _number;
@@ -108,11 +112,6 @@ namespace TriangleGame {
 
 	bool peg::operator<=(const peg& other) const {
 		return *(this) < other || *(this) == other;
-	}
-
-	std::ostream& operator<<(std::ostream& os, const peg& p) {
-		os << p.to_string();
-		return os;
 	}
 
 	//--------------------------------------------------

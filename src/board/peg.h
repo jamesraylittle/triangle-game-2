@@ -17,6 +17,8 @@
 #include <sstream>
 #include <cmath>
 
+#include "../include/abstract/printable.h"
+
 #define EMPTY_PEG_STR "X" //!< The string representation of an empty peg
 
 namespace TriangleGame {
@@ -26,7 +28,7 @@ namespace TriangleGame {
 	 * a peg can be moved to a different row, and index, or removed
 	 * completely from the board.
 	 */
-	class peg {
+	class peg : public abstract::printable {
 		public:
 			/**
 			 * @brief Construct a new empty peg object
@@ -65,6 +67,14 @@ namespace TriangleGame {
 			 * @param p The peg to make a copy from
 			 */
 			peg(const peg& p);//= delete;
+
+			/**
+			 * @brief Determines if the peg is empty.
+			 * 
+			 * @return true If the peg is empty
+			 * @return false If the peg is not empty
+			 */
+			bool is_empty() const;
 
 			/**
 			 * @brief Returns the inital Peg number.
@@ -148,7 +158,7 @@ namespace TriangleGame {
 			 * 
 			 * @return std::string The string representation of the peg.
 			 */
-			std::string to_string() const;
+			std::string to_string() const noexcept;
 
 			/**
 			 * @brief Compares the row and index with another peg.
@@ -194,16 +204,6 @@ namespace TriangleGame {
 			 * @return false False otherwise.
 			 */
 			bool operator<=(const peg& other) const;
-			
-			/**
-			 * @brief Creates a string representation of the peg, 
-			 * then appends it to the ostream.
-			 * 
-			 * @param os The ostream to append the string representation to.
-			 * @param p The peg to create a string representation of.
-			 * @return std::ostream& The ostream with the string representation appended.
-			 */
-			friend std::ostream& operator<<(std::ostream& os, const peg& p);
 			
 			/**
 			 * @brief Calculates the the last peg number for a given row.

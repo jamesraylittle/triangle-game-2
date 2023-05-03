@@ -45,6 +45,24 @@ namespace util {
 		}
 
 		/**
+		 * @brief Checks if the input is in the list.
+		 * 
+		 * @tparam T The type of the elements in the list, and input
+		 * @param input The input from the user.
+		 * @param v The list to check
+		 * @return true If the input is in the list
+		 * @return false If the input is not in the list
+		 */
+		template <typename T>
+		bool in_list(T input, const std::vector<T>& v) {
+			for (const auto& e : v) {
+				if (e == input)
+					return true;
+			}
+			return false;
+		}
+
+		/**
 		 * @brief Checks if a number is in a list.
 		 * 
 		 * @param input The number to check, the needle
@@ -53,11 +71,7 @@ namespace util {
 		 * @return false If the number is not in the list
 		 */
 		bool in_list(int input, const std::vector<int>& v) {
-			for (const auto& e : v) {
-				if (e == input)
-					return true;
-			}
-			return false;
+			return in_list<int>(input, v);
 		}
 
 		/**
@@ -71,6 +85,75 @@ namespace util {
 		 */
 		bool is_binary(char input, char trueChar, char falseChar) {
 			return input == trueChar || input == falseChar;
+		}
+
+	}
+
+	/**
+	 * @brief Contains functions used to format user input.
+	 * 
+	 */
+	namespace format_funcs {
+		/**
+		 * @brief Applies no formatting to the input.
+		 * Returns the input as given.
+		 * @tparam T The type of the input
+		 * @param input The input
+		 * @return T The input
+		 */
+		template<typename T>
+		T no_format(T input) {
+			return input;
+		}
+
+		/**
+		 * @brief Converts the input to uppercase.
+		 * 
+		 * @param input The input
+		 * @return char The input, converted to uppercase
+		 */
+		char char_to_lower(char input) {
+			return std::tolower(input);
+		}
+
+		/**
+		 * @brief Converts the input to lowercase.
+		 * 
+		 * @param input The input
+		 * @return char The input, converted to lowercase
+		 */
+		char char_to_upper(char input) {
+			return std::toupper(input);
+		}
+
+		/**
+		 * @brief Converts the input to lowercase.
+		 * 
+		 * @tparam T The type of the input
+		 * @param input The input
+		 * @return T The input, converted to lowercase
+		 */
+		template<typename T>
+		T to_lower(T input) {
+			std::transform(input.begin(), input.end(), input.begin(), [](unsigned char c) { 
+				return std::tolower(c); 
+			});
+			return input;
+		}
+
+		/**
+		 * @brief Converts the input to uppercase.
+		 * 
+		 * @tparam T The type of the input
+		 * @param input The input
+		 * @return T The input, converted to uppercase
+		 */
+		template<typename T>
+		T to_upper(T input) {
+			std::transform(input.begin(), input.end(), input.begin(), [](unsigned char c) { 
+				return std::toupper(c); 
+			});
+			return input;
 		}
 
 	}
@@ -134,6 +217,29 @@ namespace util {
 	}
 
 	/**
+	 * @brief Asks the user a question, via std::cout,
+	 * then checks if the input is in the given options vector.
+	 * If the input is not in the options vector, the question is asked again,
+	 * If the input is in the options vector, then the input is returned.
+	 * 
+	 * @tparam T The type of the expected input from the user.
+	 * @param question The question to ask the user
+	 * @param options The vector of options to check the input against
+	 * @return T The valid input from the user
+	 */
+	template <typename T>
+	T ask_for_option(const std::string& question, const std::vector<T> options, std::function<T(T)> format_input = format_funcs::no_format<T>) {
+		std::stringstream ss; 
+		ss << question << " " << vector_to_str<T>(options);
+
+		T output = ask_user<T>(ss.str(), [options, format_input](T input) -> bool {
+			return validation_funcs::in_list<T>(format_input(input), options);
+		});
+ 
+		return format_input(output);
+	}
+
+	/**
 	 * @brief Asks the user for a number, within a range.
 	 * 
 	 * @param question The question to ask the user
@@ -163,16 +269,11 @@ namespace util {
 	 * @return int The valid input from the user
 	 * @see ask_user
 	 * @see ask_for_number
+	 * @see ask_for_option
 	 * @see validation_funcs::in_list
 	 */
 	int ask_for_number(const std::string& question, const std::vector<int>& list) {
-		std::stringstream ss;
-
-		ss << question << " " << vector_to_str(list);
-
-		return ask_user<int>(ss.str(), [list](int input) -> bool {
-			return validation_funcs::in_list(input, list);
-		});
+		return ask_for_option<int>(question, list);
 	}
 
 	/**
