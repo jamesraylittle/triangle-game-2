@@ -209,6 +209,8 @@ namespace TriangleGame {
 
 			bool remove_inital_peg(int pegNumber);
 
+			bool go_back();
+
 			/**
 			 * @brief Moves the given fromPeg to the toPeg.
 			 * The move is first validated, if the move is valid then

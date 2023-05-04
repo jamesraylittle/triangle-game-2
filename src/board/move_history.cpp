@@ -21,6 +21,12 @@ namespace TriangleGame {
 		return add_move(move(removedPeg));
 	}
 
+	t_history_index move_history::go_back() {
+		if (_index == -1) return _index;
+		_history.erase(_index--);
+		return _index;
+	}
+
 	t_history_index move_history::get_index() const {
 		return _index;
 	}
@@ -32,6 +38,10 @@ namespace TriangleGame {
 			return false;
 		}
 		return true;
+	}
+
+	std::size_t move_history::size() const noexcept {
+		return _history.size();
 	}
 
 	std::string move_history::to_string() const noexcept {

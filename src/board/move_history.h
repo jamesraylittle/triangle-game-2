@@ -22,9 +22,13 @@ namespace TriangleGame {
 
 			t_history_index add_move(const peg& removedPeg);
 
+			t_history_index go_back();
+
 			t_history_index get_index() const;
 
 			bool try_get_move(t_history_index index, move& m) const;
+
+			std::size_t size() const noexcept;
 
 			std::string to_string() const noexcept;
 

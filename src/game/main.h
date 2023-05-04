@@ -73,16 +73,20 @@ std::string get_game_result(int total_pegs_left) {
 	}
 }
 
-void play_game(int height) {
-	//Init Game Board	 
-	auto board = TriangleGame::board(height);
-
+void initalize_game(TriangleGame::board& board) {
 	//Show Game Board
 	std::cout << board << std::endl << std::endl;
 
 	//Ask for First Peg to Remove
 	int pegNumber = util::ask_for_number("Enter First Peg to Remove", 1, board.get_total_pegs());
 	board.remove_inital_peg(pegNumber);
+}
+
+void play_game(int height) {
+	//Init Game Board	 
+	auto board = TriangleGame::board(height);
+
+	initalize_game(board);
 		
 	//Priming Reed Pattern
 	//Get All Moves
@@ -108,7 +112,13 @@ void play_game(int height) {
 				board.move_peg(fromPeg, toPeg);
 
 		} else if (action == 'U') { // Undo Previous Move
-			std::cout << "Undo Previous Move - Feature Not Implemented" << std::endl;
+			std::cout << "Undo Previous Move" << std::endl;
+			board.go_back();
+
+			//If the user undos the inital move, re-initalize the game
+			//which is asking for the first peg to be removed.
+			if (board.get_move_history().size() == 0) 
+				initalize_game(board);
 
 		} else if (action == 'V') { // View History
 			std::cout << "-------- Move History --------" << std::endl << board.get_move_history() << std::endl;

@@ -101,6 +101,23 @@ namespace TriangleGame {
 		return true;
 	}
 
+	bool board::go_back() {
+		move m;
+		if (!_history.try_get_move(_history.get_index(), m))
+			return false;
+
+		if (m.is_inital_move()) {
+			add_peg(m.get_removed());
+		} else {
+			add_peg(m.get_from());
+			add_peg(m.get_removed());
+			remove_peg(m.get_to());
+		}
+
+		_history.go_back();
+		return true;
+	}
+
 	bool board::move_peg(const peg& fromPeg, const peg& toPeg) {
 		if (!validate_move(fromPeg, toPeg)) return false;
 
